@@ -13,25 +13,32 @@ def cantidad_salidas(cadena:str)->dict:
 
 def datos_x_cuil(cadena)->dict:
 
-    # El planteo viene encaminado, faltó filtrar por número de CUIL y
-    # había que tener en cuenta que un empleado puede tener más de un
-    # registro, por lo tanto, se deberá mostrar esa N cantidad de 
-    # registros
-    #
-    # @author Leonel Abel Chaves
-
-    dic={}
+    cuil=input("Ingrese el cuil del trabajador que deseas la informacion: ")
+    lista= list()
     trabajadores=cadena.split("||")
-    trabajadores_list=[]
-    for trabajador in trabajadores:
-        trabajadores_list.append(trabajador.split(","))
-    for trabajador2 in trabajadores_list:
-        if trabajador2[0] not in dic.keys():
-            dic[trabajador2[0]]=",".join(trabajador2[1:len(trabajador2)])
-        else:
-            dic[trabajador2[0]]+=","+",".join(trabajador2[3:len(trabajador2)])
-    return dic  #llegue hacerlo con diccionarios, por el tiempo no lo pude hacer con listas
+    for trabajador in range(len(trabajadores)):
+        trabajadores[trabajador]=trabajadores[trabajador].split(",")
+    for trabajador2 in trabajadores:
+        if trabajador2[0] == cuil:
+            lista.append(trabajador2)
+    return lista
 
+def no_cumple_horario(cadena):
+    diccionario= dict()
+    listado= list()
+    trabajadores=cadena.split("||")
+    for trabajador in range(len(trabajadores)):
+        trabajadores[trabajador]=trabajadores[trabajador].split(",")
+    for trabajador2 in trabajadores:
+        if trabajador2[0] not in diccionario.keys():
+            diccionario[trabajador2[0]]=[trabajador2[1],trabajador2[2], int(trabajador2[4])-int(trabajador2[3])]
+        elif trabajador2[0] in diccionario.keys():
+            diccionario[trabajador2[0]][2]+=int(trabajador2[4])-int(trabajador2[3])
+
+    for trabajador3 in diccionario.keys():
+        if diccionario[trabajador3][2] < 800:
+            listado.append([diccionario[trabajador3][0],diccionario[trabajador3][1],diccionario[trabajador3][2]])
+    return listado
 
 # Sumo el siguiente bloque de código, para realizar pruebas
 #
@@ -42,7 +49,10 @@ def main() -> None:
 
     cantidad_de_salidas: dict = cantidad_salidas(cadena)
 
-    datos: dict = datos_x_cuil(cadena)
+    
+    datos: list = datos_x_cuil(cadena)
+
+    datosv2 : dict = no_cumple_horario(cadena)
 
     print()
 
